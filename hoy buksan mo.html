@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Galaxy ✨ | FRESCILLE MAE NACASI</title>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Sacramento&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --pink: #ff6ad5;
+      --blue: #7aa2ff;
+      --deep: #0a0b23;
+      --white: #ffffff;
+      --glass: rgba(255,255,255,0.08);
+      --accent: #ffd36e;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% 20%, rgba(255,105,180,0.25), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 30%, rgba(122,162,255,0.22), transparent 60%),
+                  radial-gradient(900px 900px at 50% 80%, rgba(255,255,255,0.06), transparent 60%),
+                  linear-gradient(120deg, #0a0b23 0%, #141644 45%, #2b1b4f 70%, #3a1a5a 100%);
+      color: var(--white);
+      overflow: hidden;
+    }/* Shared layout */
+.screen{
+  position: fixed; inset: 0; display:grid; place-items:center; padding: clamp(16px, 4vw, 40px);
+  opacity: 0; pointer-events:none; transform: scale(1.02);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.screen.active{opacity:1; pointer-events:auto; transform: scale(1)}
+
+/* Starfield canvas sits behind everything */
+canvas#stars{position:fixed; inset:0; z-index:0}
+
+/* Decorative floating nebula fog */
+.nebula{
+  position: fixed; inset: -20vmax; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(60vmax 60vmax at 20% 30%, rgba(255,106,214,0.12), transparent 60%),
+    radial-gradient(50vmax 50vmax at 80% 20%, rgba(122,162,255,0.10), transparent 60%),
+    radial-gradient(70vmax 70vmax at 40% 80%, rgba(255,211,110,0.06), transparent 60%);
+  filter: blur(22px) saturate(120%);
+  animation: drift 30s ease-in-out infinite alternate;
+}
+@keyframes drift{
+  0%{transform:translate3d(-2vw,-1vh,0) rotate(-2deg)}
+  100%{transform:translate3d(2vw,1vh,0) rotate(2deg)}
+}
+
+/* Card/button glass look */
+.glass{
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+  border-radius: 24px;
+}
+
+/* Screen 1 */
+.hero{
+  z-index:1; text-align:center; gap:28px; grid-auto-rows: max-content;
+}
+.title{
+  font-weight:800; letter-spacing:.6px; line-height:1.1; margin:0 0 10px;
+  font-size: clamp(28px, 4.8vw, 56px);
+  text-shadow: 0 8px 30px rgba(255,106,214,0.25), 0 0 30px rgba(122,162,255,0.18);
+}
+.subtitle{opacity:.9; font-weight:300; margin:0 auto 10px; max-width: 720px}
+
+.cta{
+  display:inline-grid; place-items:center; padding: 16px 28px; border-radius: 999px;
+  font-weight:700; font-size: clamp(16px, 2.2vw, 22px); letter-spacing:.3px; text-transform: lowercase;
+  border: 0; cursor: pointer; color:#0b0b1e;
+  background: linear-gradient(135deg, #ffd3f3 0%, #c7d2ff 45%, #aab8ff 60%, #ffc1e9 100%);
+  box-shadow: 0 12px 30px rgba(255,106,214,0.35), 0 6px 18px rgba(122,162,255,0.25);
+  position: relative; isolation:isolate;
+}
+.cta:before{
+  content:""; position:absolute; inset:-3px; border-radius:inherit;
+  background: conic-gradient(from 0deg, var(--pink), var(--blue), var(--accent), var(--pink));
+  filter: blur(14px); z-index:-1; opacity:.6; transition: opacity .3s ease;
+}
+.cta:hover{transform: translateY(-1px)}
+.cta:hover:before{opacity:.85}
+.cta:active{transform: translateY(1px)}
+
+/* Screen 2 layout */
+.gallery{
+  z-index:1; width:100%; max-width: 1200px; margin:0 auto; display:grid; gap: clamp(18px, 2.4vw, 26px);
+  grid-template-rows: auto auto 1fr; align-content:start;
+}
+.name{
+  text-align:center; font-weight:800; letter-spacing: 2px;
+  font-size: clamp(26px, 5vw, 54px); margin: 10px auto 14px;
+  text-shadow: 0 6px 24px rgba(122,162,255,0.28), 0 0 20px rgba(255,106,214,0.22);
+}
+
+.polaroids{
+  display:grid; gap: clamp(14px, 2vw, 22px);
+  justify-content:center; align-items:start;
+  grid-template-columns: repeat(6, minmax(90px, 120px));
+}
+@media (max-width: 920px){
+  .polaroids{grid-template-columns: repeat(3, minmax(90px, 120px));}
+}
+@media (max-width: 520px){
+  .polaroids{grid-template-columns: repeat(2, minmax(90px, 120px));}
+}
+
+.polaroid{
+  width: 120px; aspect-ratio: 3/4; background:#fff; border-radius: 10px; padding:8px 8px 18px; position:relative;
+  box-shadow: 0 18px 40px rgba(0,0,0,.35);
+  transform: rotate(var(--rot, -3deg)); transition: transform .25s ease, box-shadow .25s ease;
+}
+.polaroid img{width:100%; height:100%; object-fit:cover; border-radius:6px}
+.polaroid:after{content:""; position:absolute; inset:0; border-radius:10px; box-shadow: inset 0 0 1px rgba(0,0,0,.2)}
+.polaroid:hover{transform: rotate(0deg) scale(1.05); box-shadow: 0 22px 50px rgba(0,0,0,.45)}
+
+/* Tiny colored dots (extra layer) */
+.confetti{
+  position: fixed; inset:0; pointer-events:none; z-index:0;
+}
+.dot{position:absolute; width:6px; height:6px; border-radius:50%; opacity:.65; filter: blur(.4px)}
+
+/* Footer hint */
+.hint{opacity:.65; font-size:12px; margin-top:8px; text-align:center}
+
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <div class="nebula"></div>
+  <div class="confetti" id="confetti"></div>  <!-- Screen 1: Hero -->  <section id="screen1" class="screen hero active">
+    <div class="glass" style="padding: clamp(18px, 4vw, 32px); max-width: 800px;">
+      <h1 class="title">YOUR ALBUM</h1>
+      <p class="subtitle">basta buksan mo nalang yan lang kinaya hahahaha</p>
+      <button id="openBtn" class="cta">open mo</button>
+      <div class="hint">Click the button to continue ✨</div>
+    </div>
+  l</section>
+
+<!-- Screen 2: Gallery -->
+<section id="screen2" class="screen gallery">
+  <h2 class="name">FRESCILLE MAE NACASI</h2>
+
+  <div class="polaroids" id="polaroids">
+    <!-- 6 cute polaroids (small) -->
+    <figure class="polaroid" style="--rot:-6deg">
+      <img src="https://raw.githubusercontent.com/marienacasi6-design/Birthday/5a7137ecaf16931e1135a7c0dc915836947f9760/IMG_20250513_093625_639.jpg" alt="Polaroid 1">
+    </figure>
+
+    <figure class="polaroid" style="--rot:3deg">
+      <img src="https://raw.githubusercontent.com/marienacasi6-design/Birthday/5a7137ecaf16931e1135a7c0dc915836947f9760/IMG_20250513_093632_596.jpg" alt="Polaroid 2">
+    </figure>
+
+    <figure class="polaroid" style="--rot:-2deg">
+      <img src="https://raw.githubusercontent.com/marienacasi6-design/Birthday/5a7137ecaf16931e1135a7c0dc915836947f9760/IMG_20250802_203613_433.jpg" alt="Polaroid 3">
+    </figure>
+
+    <figure class="polaroid" style="--rot:5deg">
+      <img src="https://raw.githubusercontent.com/marienacasi6-design/Birthday/5a7137ecaf16931e1135a7c0dc915836947f9760/IMG_20250818_180550_440.jpg" alt="Polaroid 4">
+    </figure>
+
+    <figure class="polaroid" style="--rot:-4deg">
+      <img src="https://raw.githubusercontent.com/marienacasi6-design/Birthday/5a7137ecaf16931e1135a7c0dc915836947f9760/Messenger_creation_20E44D34-50B0-430D-8B14-5555C85309CB.jpeg" alt="Polaroid 5">
+    </figure>
+
+    <figure class="polaroid" style="--rot:2deg">
+      <img src="https://raw.githubusercontent.com/marienacasi6-design/Birthday/5a7137ecaf16931e1135a7c0dc915836947f9760/Messenger_creation_943E0784-B671-422C-8564-F06B8D3EA3A5.jpeg" alt="Polaroid 6">
+    </figure>
+  </div>
+
+<div class="hint">Replace the image URLs with your own cute photos 🥰</div>
+
+<audio id="bgm" preload="auto" 
+  src="https://raw.githubusercontent.com/marienacasi6-design/Birthday/9f3752af60b3152d5585f2f418ed8255a184a879/Edwin%20McCain%20-%20I'll%20Be%20(Official%20Music%20Video).mp3">
+</audio>
+
+  <script>
+    // --- Screen toggling & music ---
+    const openBtn = document.getElementById('openBtn');
+    const s1 = document.getElementById('screen1');
+    const s2 = document.getElementById('screen2');
+    const bgm = document.getElementById('bgm');
+
+    openBtn.addEventListener('click', async () => {
+      s1.classList.remove('active');
+      s2.classList.add('active');
+      bgm.volume = 0.6;
+      try{ await bgm.play(); }catch(err){ console.warn('Autoplay blocked until user interacts more:', err); }
+    });
+
+    // --- Starfield with colorful dots ---
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+
+    function resize(){
+      W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight;
+      spawnStars();
+    }
+    window.addEventListener('resize', resize);
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    function spawnStars(){
+      const count = Math.floor((W * H) / 12000); // density
+      stars = new Array(count).fill(0).map(() => ({
+        x: rand(0, W),
+        y: rand(0, H),
+        r: rand(0.7, 2.4),
+        a: rand(0.35, 0.9),
+        vx: rand(-0.05, 0.05),
+        vy: rand(0.03, 0.12),
+        hue: rand(200, 330) // pink/blue range with some purple
+      }));
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      // subtle space glow
+      const g = ctx.createRadialGradient(W*0.75, H*0.25, 0, W*0.75, H*0.25, Math.max(W,H));
+      g.addColorStop(0, 'rgba(122,162,255,0.06)');
+      g.addColorStop(1, 'rgba(10,11,35,0)');
+      ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+      for(const s of stars){
+        s.x += s.vx; s.y += s.vy; s.a += Math.sin((s.x+s.y)*0.002)*0.002;
+        if(s.y > H+10) { s.y = -10; s.x = rand(0,W); }
+        if(s.x < -10) s.x = W+10; if(s.x > W+10) s.x = -10;
+        ctx.beginPath();
+        ctx.globalAlpha = Math.max(0.25, Math.min(1, s.a));
+        ctx.fillStyle = `hsl(${s.hue}, 90%, 70%)`;
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    resize();
+    draw();
+
+    // --- Extra small colored dots (confetti layer) ---
+    const confetti = document.getElementById('confetti');
+    function spawnConfetti(n=70){
+      const colors = ['#ffd36e','#ff6ad5','#7aa2ff','#b9ffea','#fff0f6'];
+      for(let i=0;i<n;i++){
+        const d = document.createElement('span');
+        d.className='dot';
+        const size = Math.random()*3 + 2;
+        d.style.width = d.style.height = size + 'px';
+        d.style.left = (Math.random()*100) + 'vw';
+        d.style.top = (Math.random()*100) + 'vh';
+        d.style.background = colors[Math.floor(Math.random()*colors.length)];
+        d.style.opacity = (Math.random()*0.5 + 0.4).toFixed(2);
+        d.animate([
+          { transform: `translateY(0px)` },
+          { transform: `translateY(${Math.random()*12 - 6}px)` }
+        ], { duration: 4000 + Math.random()*4000, direction:'alternate', iterations: Infinity, easing: 'ease-in-out' });
+        confetti.appendChild(d);
+      }
+    }
+    spawnConfetti(90);
+
+    // Optional: keyboard shortcut to go back to Screen 1 (for testing)
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ s2.classList.remove('active'); s1.classList.add('active'); bgm.pause(); bgm.currentTime = 0; } });
+  </script></body>
+</html>
